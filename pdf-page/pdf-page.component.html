@@ -1,0 +1,57 @@
+<div style="padding: 0px 0;">
+    <!-- Logo or header area with an SVG image, centered within the container -->
+    <div style="padding-bottom: 75px; text-align: center;">
+        <svg _ngcontent-ng-c301154315="" width="462" height="88" viewBox="0 0 231 44" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <!-- Various SVG path elements that define the image/logo -->
+            <path _ngcontent-ng-c301154315=""
+                d="M5.52125 15.4348H0V13.5974H13.2325V15.4348H7.68375V30.1071H5.52125V15.4348Z" fill="#EF3F37"></path>
+            <path _ngcontent-ng-c301154315="" d="..." fill="#EF3F37"></path>
+            <!-- More path elements defining the SVG structure -->
+            <path _ngcontent-ng-c301154315="" d="..." fill="#1175BC"></path>
+            <!-- Additional path elements for the logo, including colors and shapes -->
+            <path _ngcontent-ng-c301154315="" d="..." fill="#949599"></path>
+            <!-- Last SVG path for the logo -->
+        </svg>
+    </div>
+
+    <!-- Project title section displaying project name -->
+    <h2 style="font-size: 30px; line-height: 38px; font-weight: 700; color: #101828; margin-bottom: 0px; width: 100%;">
+        {{projectDetails?.projectName}}
+    </h2>
+
+    <!-- Section displaying project start date, end date, and status -->
+    <div style="font-size: 20px; line-height: 30px; font-weight: 400; color: #475467; margin-bottom: 40px;">
+        Start Date: {{projectDetails?.startDate | date:'M/d/y'}} - End Date: {{projectDetails?.endDate | date:'M/d/y'}}
+        - Status: {{projectDetails?.status}}
+    </div>
+
+    <!-- Title for the current section or table -->
+    <h2 style="font-size: 24px; line-height: 32px; font-weight: 700; color: #475467; margin-bottom: 0px; width: 100%;">
+        {{titleName}}
+    </h2>
+
+    <!-- Table to display the details with dynamic data and column headings -->
+    <table style="border-collapse: collapse !important; width: 100%;">
+        <tbody>
+            <!-- Outer loop to iterate over table data -->
+            @for (data of tableData; track data.visitId; let i=$index) {
+            <!-- Inner loop to iterate over column names and dynamically generate rows -->
+            @for (col of colName; track col; let j=$index) {
+            <tr class="">
+                <!-- Table header (th) for column heading -->
+                <th
+                    style="font-size: 20px; width: 250px; line-height: 30px; font-weight: 600; color: #475467; padding: 40px 24px 0; border: 1px solid #EAECF0; vertical-align: middle !important; background-color: #f9fafb;">
+                    <span>{{heading[j]}}</span>
+                </th>
+                <!-- Table data (td) to display the corresponding value for the row -->
+                <td
+                    style="font-size: 20px; line-height: 30px; font-weight: 400; color: #475467; padding: 40px 24px 0; border: 1px solid #EAECF0; vertical-align: middle !important;">
+                    {{data[col]}}
+                </td>
+            </tr>
+            }
+            }
+        </tbody>
+    </table>
+</div>
