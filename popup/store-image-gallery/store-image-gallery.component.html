@@ -1,0 +1,69 @@
+<div class="p-5 p-xl-8 py-xxl-12 px-xxl-10 offcanvas-gallery">
+    <!-- Header block with a title and close button -->
+    <div class="head-block pb-6 mb-6 position-relative border-bottom">
+        <!-- Section heading -->
+        <h2 class="h2 mb-4 pe-10">Store Image Gallery</h2>
+        <!-- Displaying total number of images using a badge -->
+        <div class="d-flex gap-2 flex-wrap">
+            <span class="badge badge-small badge-blue">{{storeImageList.length}} Images</span>
+        </div>
+        <!-- Close button (SVG icon) positioned at the top-right corner -->
+        <a class="icon p-5 position-absolute top-0 end-0" (click)="goBack()">
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M27 16L17 26M17 16L27 26" stroke="#344054" stroke-width="1.66667" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </a>
+    </div>
+
+    <!-- Card containing the image gallery content -->
+    <div class="card rounded-xl">
+        <div class="card-body p-4">
+            <!-- Conditional rendering: show loader if content is still loading -->
+            @if (isLoading) {
+            <loader></loader> <!-- Placeholder loader component -->
+            }
+
+            <!-- Conditional rendering: display no data message if there are no images -->
+            @if (!isLoading && storeImageList.length == 0) {
+            <no-data-available
+                [msg]="'There is no images to display at the moment. Please check back later.'"></no-data-available>
+            }
+
+            <!-- Image gallery grid -->
+            <div class="overflow-hidden">
+                <div class="row row-cols-1 row-cols-md-2 g-5 gy-xxl-6 gx-xl-8">
+                    <!-- Loop through each image in the storeImageList array -->
+                    @for (storeImg of storeImageList; track $index) {
+                    <div class="col d-flex flex-column h-inherit">
+                        <!-- Card for each image with rounded corners and flexbox layout -->
+                        <div
+                            class="bg-white rounded-xxl box-image overflow-hidden d-flex flex-column h-inherit flex-fill">
+                            <!-- Image thumbnail with click event to view full image -->
+                            <figure class="picture" style="max-width:100%;cursor:pointer" (click)="onClick($event)">
+                                <img [src]="storeImg.value" width="400" height="240" alt="Gallery Thumb" />
+                            </figure>
+                            <!-- Image metadata section -->
+                            <div class="px-6 pb-6 pt-4">
+                                <small class="mb-3 fw-semibold">
+                                    Visit Date • {{storeImg.visitDate | date:'dd MMM YYYY'}}
+                                </small>
+                                <!-- Badges to display visit and store information -->
+                                <div class="d-flex gap-1 flex-wrap">
+                                    <span class="badge badge-small badge-blue p-2">Visit ID: {{storeImg.visitId}}</span>
+                                    <span class="badge badge-small badge-purple p-2">Store ID:
+                                        {{storeImg.storeId}}</span>
+                                    <span class="badge badge-small badge-blue p-2">Store No.:
+                                        {{storeImg.storeNumber}}</span>
+                                    <span class="badge badge-small badge-purple badge-wrap p-2">Store Name:
+                                        {{storeImg.storeName}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
