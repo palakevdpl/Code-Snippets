@@ -1,0 +1,17 @@
+<div class="modal-image d-flex justify-content-center align-items-center">
+    <!-- Close button for the modal, triggers onClose method when clicked -->
+    <button type="button" #closebutton class="btn-close" data-dismiss="modal" (click)="onClose()">
+    </button>
+
+    <!-- Modal dialog container with centering and transitions -->
+    <div class="modal-dialog h-100 transition modal-xl modal-dialog-centered">
+        <!-- Modal content with transparent background and full width/height -->
+        <div class="modal-content h-100 w-100 bg-transparent">
+            <!-- Modal body to display the image, centered vertically and horizontally -->
+            <div class="modal-body h-100 d-flex align-items-center">
+                <!-- Image element with a dynamic source, styled for maximum width and pointer cursor -->
+                <img src="{{imgSrc}}" style="max-width:100%;cursor:pointer" class="modal-hover-opacity" />
+            </div>
+        </div>
+    </div>
+</div>
