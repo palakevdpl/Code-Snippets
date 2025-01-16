@@ -1,0 +1,180 @@
+<div class="p-5 p-xl-8 py-xxl-12 px-xxl-10 offcanvas-gallery">
+    <!-- Header block with a title and metadata about the visit -->
+    <div class="head-block pb-6 mb-6 position-relative border-bottom">
+        <!-- Section title for Questions & Responses -->
+        <h2 class="h2 mb-4 pe-10">Visit Questions & Responses</h2>
+
+        <!-- Visit ID and Store ID badges -->
+        <div class="d-flex gap-2 flex-wrap">
+            <span class="badge badge-small badge-blue">Visit ID: {{visitId}}</span>
+            <span class="badge badge-small badge-purple">Store ID: {{storeId}}</span>
+        </div>
+
+        <!-- Close button (SVG icon) to trigger the goBack method -->
+        <a class="icon p-5 position-absolute top-0 end-0" (click)="goBack()">
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M27 16L17 26M17 16L27 26" stroke="#344054" stroke-width="1.66667" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </a>
+    </div>
+
+    <div class="position-relative">
+        <!-- Conditional rendering for slide toggle, visible only when id is 0 -->
+        @if (id == 0) {
+        <mat-slide-toggle color="primary" [checked]="checked" [(ngModel)]="checked" (change)="toggleQuestion($event)">
+            Collapse all Questions Answer
+        </mat-slide-toggle>
+        }
+
+        <!-- Tab group with two tabs: Questions & Answers and Image Gallery -->
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" (selectedTabChange)="tabClick($event)">
+            <!-- First tab: Questions & Answers -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <!-- Tab label content -->
+                    <div class="d-flex align-items-center flex-sm-row flex-column gap-2">
+                        <mat-icon class="mx-auto mx-sm-0" svgIcon="question"></mat-icon>
+                        Questions & Answers
+                    </div>
+                </ng-template>
+
+                <!-- Card for Questions & Answers content -->
+                <div class="card rounded-xl">
+                    <div class="card-body p-4">
+                        <!-- Accordion for questions -->
+                        <mat-accordion multi>
+                            <!-- Loop through the visited questions -->
+                            @for (q of visitedQuestion; track q.visitId; let i = $index) {
+                            <mat-expansion-panel [expanded]="isExpandedAll" (opened)="checkOpen(i)"
+                                (closed)="checkClose(i)">
+                                <mat-expansion-panel-header>
+                                    <!-- Question header with index number and SVG icon -->
+                                    <mat-panel-title>
+                                        <small>
+                                            <span class="fw-bold">Q{{i+1}}. </span>
+                                            <span class="fw-semibold" [innerHTML]="q.question"></span>
+                                        </small>
+                                        <span class="icon ms-2 p-3">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+                                                    stroke="#98A2B3" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                                <path d="M8 12H16" stroke="#98A2B3" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                                <path class="line" d="M12 8L12 16" stroke="#98A2B3" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <!-- Answer section -->
+                                <small class="fw-bold d-inline-block w-100 mb-4">Ans</small>
+
+                                <!-- Conditional rendering based on question type -->
+                                @if (q.questionType == "Radio Button" || q.questionType == "Short Text" ||
+                                q.gridQuestionType != 'Photo') {
+                                <!-- Loop through text-based responses -->
+                                @for (res of q.responses; track $index) {
+                                <small class="fw-semi-bold d-inline-block w-100 mb-4">{{res}}</small>
+                                }
+                                }
+                                @else {
+                                <!-- Loop through image-based responses -->
+                                @for (res of q.responses; track $index) {
+                                @if (res !== "") {
+                                <figure class="picture cursor-pointer rounded-circle w-auto p-6"
+                                    (click)="onClick($event)">
+                                    <img [src]="res" width="50" height="50" alt="Gallery Thumb" />
+                                </figure>
+                                }
+                                }
+                                }
+                            </mat-expansion-panel>
+                            }
+                        </mat-accordion>
+
+                        <!-- Loader component shown when questions are still loading -->
+                        @if (isQuesLoading) {
+                        <loader></loader>
+                        }
+
+                        <!-- No data component shown when no questions are available -->
+                        @if (!isQuesLoading && visitedQuestion.length == 0) {
+                        <no-data-available
+                            [msg]="'There is no questions to display at the moment. Please check back later.'"></no-data-available>
+                        }
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- Second tab: Image Gallery -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <!-- Tab label content -->
+                    <div class="d-flex align-items-center flex-sm-row flex-column gap-2">
+                        <mat-icon class="mx-auto mx-sm-0" svgIcon="image"></mat-icon>
+                        Image Gallery
+                    </div>
+                </ng-template>
+
+                <!-- Card for Image Gallery content -->
+                <div class="card rounded-xl">
+                    <div class="card-body p-4">
+                        <!-- Loader component shown when images are still loading -->
+                        @if (isImgLoading) {
+                        <loader></loader>
+                        }
+
+                        <!-- No data component shown when no images are available -->
+                        @if (!isImgLoading && visitedImages.length == 0) {
+                        <no-data-available
+                            [msg]="'There are no images to display at the moment. Please check back later.'"></no-data-available>
+                        }
+
+                        <!-- Grid of images -->
+                        <div class="overflow-hidden">
+                            <div class="row row-cols-1 row-cols-md-2 g-5 gy-xxl-6 gx-xl-8">
+                                <!-- Loop through the visited images -->
+                                @for (img of visitedImages; track img?.visitId; let i = $index) {
+                                <div class="col d-flex flex-column h-inherit">
+                                    <!-- Image card with clickable image -->
+                                    <div
+                                        class="bg-white rounded-xxl box-image overflow-hidden d-flex flex-column h-inherit flex-fill">
+                                        <figure class="picture" style="max-width:100%;cursor:pointer"
+                                            (click)="onClick($event)">
+                                            <img [src]="img?.value" width="400" height="240" alt="Gallery Thumb" />
+                                        </figure>
+
+                                        <!-- Image metadata section -->
+                                        <div class="px-6 pb-6 pt-4">
+                                            <small class="mb-3 fw-semibold">
+                                                Visit Date • {{ img?.visitDate }}
+                                            </small>
+                                            <!-- Badges displaying visit and store details -->
+                                            <div class="d-flex gap-1 flex-wrap">
+                                                <span class="badge badge-small badge-blue p-2">Visit ID:
+                                                    {{visitId}}</span>
+                                                <span class="badge badge-small badge-purple p-2">Store ID:
+                                                    {{storeId}}</span>
+                                                <span class="badge badge-small badge-blue p-2">Store No.:
+                                                    {{img?.storeNumber}}</span>
+                                                <span class="badge badge-small badge-purple badge-wrap p-2">Store Name:
+                                                    {{img?.storeName}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
