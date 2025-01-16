@@ -1,0 +1,71 @@
+<div class="jewish-calendar">
+	@if (!isOneDate) {
+		<div class="left-calendar-menu">
+			<div>
+				<button class="btn-menus active" id="id_today" (click)="clearForAllTime.emit(false);onToday($event)">{{'CALENDAR.TODAY' | translate}}</button>
+				<button class="btn-menus" id="id_thisweek" (click)="clearForAllTime.emit(false);onThisWeek($event)">{{'CALENDAR.THIS_WEEK' | translate}}</button>
+				<button class="btn-menus" id="id_Last7days" (click)="clearForAllTime.emit(false);onLast7days($event)">{{'CALENDAR.LAST_7_DAYS' | translate}}</button>
+				<button class="btn-menus" id="id_ThisMonth" (click)="clearForAllTime.emit(false);onThisMonth($event)">{{'CALENDAR.THIS_MONTH' | translate}}</button>
+				<button class="btn-menus" id="id_LastMonth" (click)="clearForAllTime.emit(false);onLastMonth($event,-1)">{{'CALENDAR.LAST_MONTH' | translate}}</button>
+				<button class="btn-menus" id="id_NextMonth" (click)="clearForAllTime.emit(false);onNextMonth($event,1)">{{'CALENDAR.NEXT_MONTH' | translate}}</button>
+				<button class="btn-menus" id="id_ThisYear" (click)="clearForAllTime.emit(false);onThisYear($event)">{{'CALENDAR.THIS_YEAR' | translate}}</button>
+				<button class="btn-menus" id="id_LastYear" (click)="clearForAllTime.emit(false);onLastYearNextYear($event,-1)">{{'CALENDAR.LAST_YEAR' | translate}}</button>
+				<button class="btn-menus" id="id_NextYear" (click)="clearForAllTime.emit(false);onLastYearNextYear($event,1)">{{'CALENDAR.NEXT_YEAR' | translate}}</button>
+				<button class="btn-menus" id="id_CustomRange" (click)="clearForAllTime.emit(false);onCustomRange($event)">{{'CALENDAR.CUSTOM_RANGE' | translate}}</button>
+				@if ((pageName != 'RecentDashboard' && pageName != 'TotalRecentDashboard' && pageName != 'UpcomingDashboard' && pageName != 'Dashboard')) {
+				<button class="btn-menus" id="id_AllTime" (click)="onAllTime($event)">{{'CALENDAR.ALL_TIME' | translate}}</button>
+				}
+			</div>
+		</div>
+	}
+	<div class="jewish-datepicker">
+		<div class="datepicker-arrow">
+			<div class="datepicker-arrow-inner">
+				<span class="arrow-left" (click)="onNavigateToYear(-1)"><img src="/assets/dist/img/arrow-left.svg" alt="Arrow" /></span>
+				<span class="arrow-left" (click)="onNavigateToMonth(-1)"><img src="/assets/dist/img/arrow-left-single.svg" alt="Arrow" /></span>
+			</div>
+			<div class="datepicker-arrow-inner">
+				<span class="arrow-right" (click)="onNavigateToMonth(1)"><img src="/assets/dist/img/arrow-right-single.svg" alt="Arrow" /></span>
+				<span class="arrow-right" (click)="onNavigateToYear(1)"><img src="/assets/dist/img/arrow-right.svg" alt="Arrow" /></span>
+			</div>
+		</div>
+		<ngb-datepicker #dp (dateSelect)="onDateSelection($event)"
+		[displayMonths]="monthNum" [dayTemplate]="t" outsideDays="hidden" [firstDayOfWeek]="7" navigation="none" [minDate]="minDate">
+		</ngb-datepicker>
+
+		<ng-template #t let-date let-focused="focused" >
+			@if (isOneDate) {
+				<span class="custom-day" [class.range]="isOneDateRange(date)" [class.strikethrough]="isPastDate(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null" >
+					{{ date.day }}
+				</span>
+			} @else {
+				<span
+				class="custom-day"
+				[class.focused]="focused"
+				[class.range]="isRange(date)"
+				[class.faded]="isHovered(date) || isInside(date)"
+				(mouseenter)="hoveredDate = date"
+				(mouseleave)="hoveredDate = null"	
+			>
+				{{ date.day }}
+			</span>
+			}	
+		</ng-template>
+
+		@if (isOneDate) {
+			<div class="start-date" >
+				<span>{{ 'CALENDAR.DATE' | translate }}</span>
+				<input type="text" id="eng_startDate" [formControl]="fromDateControl" [value]="dateConvert(fromDate)">
+			</div>
+		} @else {
+			<div class="start-date">
+				{{ 'CALENDAR.START_DATE' | translate }}
+				<input type="text" id="eng_startDate" [formControl]="fromDateControl" [value]="dateConvert(fromDate)">
+			</div>
+			<div class="end-date">{{ 'CALENDAR.END_DATE' | translate }}
+				<input type="text" id="eng_endDate" [formControl]="toDateControl"  [value]="dateConvert(toDate)">
+			</div>
+			<div class="d-flex justify-content-between p-2"></div>
+		}
+	</div>
+</div>
