@@ -1,0 +1,82 @@
+<div class="modal-image d-flex justify-content-center align-items-center">
+    <!-- Close button for the modal, disabled if a request is in progress -->
+    <a class="icon p-5 position-absolute top-0 end-0 btn-close" [class.disabled]="isRequest" (click)="goBack()">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M27 16L17 26M17 16L27 26" stroke="#344054" stroke-width="1.66667" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+    </a>
+
+    <!-- Modal dialog content -->
+    <div class="modal-dialog h-100 modal-dialog-centered">
+        <div class="modal-content h-100 w-100">
+            <div class="modal-body h-100 d-flex align-items-center">
+                <!-- Title of the modal -->
+                <h2 class="pb-4 mb-4">Request Archive Data</h2>
+
+                <!-- Description/instructions for the user -->
+                <div class="px-4 px-md-6">
+                    <ul class="hint-message">
+                        <li>Please specify the date range for which you would like to access the archived data.</li>
+                        <li>The toggle button will become enabled as soon as the request is processed.</li>
+                    </ul>
+
+                    <!-- Form to request archive data -->
+                    <form name="archiveForm" #archiveForm="ngForm" action=""
+                        class="d-flex flex-column w-100 gap-6 mb-4">
+                        <!-- Date range input field with validation and error messages -->
+                        <div class="mat-date">
+                            <mat-label class="mb-1 d-block fw-semibold">Select Date:</mat-label>
+                            <mat-form-field appearance="outline">
+                                <!-- Date range picker, linked with form controls for start and end date -->
+                                <mat-date-range-input [formGroup]="range" [rangePicker]="picker" [min]="minDate"
+                                    [max]="maxDate" (click)="picker.open()">
+                                    <input matStartDate formControlName="start" name="start" placeholder="Start date"
+                                        readonly (click)="picker.open()" />
+                                    <input matEndDate formControlName="end" name="end" placeholder="End date" readonly
+                                        (click)="picker.open()" />
+                                </mat-date-range-input>
+
+                                <!-- Icon for opening date picker -->
+                                <mat-icon matSuffix svgIcon="date" (click)="picker.open()"></mat-icon>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
+                            </mat-form-field>
+
+                            <!-- Error messages for invalid date input -->
+                            @if (submitAttempt && range.get('start')?.hasError('required') &&
+                            range.get('start')?.touched) {
+                            <mat-error>
+                                Start date is required
+                            </mat-error>}
+                            @if (submitAttempt && range.get('end')?.hasError('required') && range.get('end')?.touched) {
+                            <mat-error>
+                                End date is required
+                            </mat-error>}
+                            @if (submitAttempt && range.get('start')?.hasError('matDatepickerMax')) {
+                            <mat-error>
+                                You can select dates only up to 3 months ago
+                            </mat-error>}
+                            @if (submitAttempt && range.get('end')?.hasError('matDatepickerMax')) {
+                            <mat-error>
+                                You can select dates only up to 3 months ago
+                            </mat-error>}
+                        </div>
+
+                        <!-- Submit button for the form, disabled while request is processing or form is invalid -->
+                        <button class="btn-animation" mat-flat-button color="primary"
+                            [disabled]="isRequest || !range.valid" (click)="submitForm()">
+
+                            <!-- Button text changes based on request status -->
+                            @if (!isRequest) {
+                            <span>Submit</span>
+                            }
+                            @if (isRequest) {
+                            <span class="btn-animation-text">Sending Request</span>
+                            }
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
